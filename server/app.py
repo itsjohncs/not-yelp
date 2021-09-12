@@ -106,3 +106,21 @@ def register():
         "username": username,
         "username": password,
     }
+
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    username = flask.request.json.get("username")
+    password = flask.request.json.get("password")
+    if not username or not password:
+        raise ValidationError("username and password are both required fields")
+
+    account = Account.query.filter_by(username=username).first()
+    try:
+        hasher.verify(account.password_hash, password)
+    except argon2.exceptions.VerifyMismatchError:
+        raise ValidationError("incorrect password")
+
+    return {
+        "result": "success",
+    }
