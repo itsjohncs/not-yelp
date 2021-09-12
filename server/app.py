@@ -1,6 +1,7 @@
 import argon2
 import flask
 import flask_sqlalchemy
+import werkzeug.exceptions
 import sqlalchemy
 
 import re
@@ -73,6 +74,14 @@ def validation_error(err):
     return {
         "result": "error",
         "message": err.message,
+    }
+
+
+@app.errorhandler(werkzeug.exceptions.InternalServerError)
+def otherwise_unhandled_error(err):
+    return {
+        "result": "error",
+        "message": "An unexpected error occurred."
     }
 
 
