@@ -11,6 +11,9 @@ import secrets
 app = flask.Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/toptal-interview-project.db"
 
+# genereate new key with `secrets.token_bytes(20)`
+app.secret_key = b'\x1dz\xf2\xbd\x91\xff\xf1\xb8\xfc\xef\x85z\xad\x98\x8c\x95^\x9f\xc0\x9b'
+
 db = flask_sqlalchemy.SQLAlchemy(app)
 
 hasher = argon2.PasswordHasher()
@@ -121,6 +124,27 @@ def login():
     except argon2.exceptions.VerifyMismatchError:
         raise ValidationError("incorrect password")
 
+    flask.session["logged_in_account_id"] = account.id
+
     return {
         "result": "success",
+    }
+
+
+@app.route("/api/whoami", methods=["GET"])
+def whoami():
+    account_id = flask.session.get("logged_in_account_id")
+    if account_id:
+        account = Account.query.filter_by(id=account_id).first()
+        if account:
+            return {
+                "result": "success",
+                "id": account.id,
+                "username": account.username,
+            }
+
+    return {
+        "result": "success",
+        "id": None,
+        "username": None,
     }
