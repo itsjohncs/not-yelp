@@ -95,7 +95,11 @@ def register():
     # Validation of the username and password is done within the model
     account = Account(username=username, password=password)
     db.session.add(account)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        raise ValidationError("username is already taken")
 
     return {
         "result": "success",
