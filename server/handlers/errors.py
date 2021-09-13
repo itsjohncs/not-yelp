@@ -13,7 +13,7 @@ def validation_error(err):
 
 
 @app.errorhandler(werkzeug.exceptions.InternalServerError)
-def otherwise_unhandled_error(err):
+def otherwise_unhandled_error(_err):
     return {
         "result": "error",
         "message": "An unexpected error occurred."

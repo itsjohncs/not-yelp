@@ -1,9 +1,5 @@
-import re
-import secrets
-
 import flask
 import flask_sqlalchemy
-import werkzeug.exceptions
 
 
 app = flask.Flask(__name__)
@@ -15,5 +11,5 @@ app.secret_key = b'\x1dz\xf2\xbd\x91\xff\xf1\xb8\xfc\xef\x85z\xad\x98\x8c\x95^\x
 db = flask_sqlalchemy.SQLAlchemy(app)
 
 
-import models
-import handlers
+import models  # pylint: disable=C0413,W0611
+import handlers  # pylint: disable=C0413,W0611
