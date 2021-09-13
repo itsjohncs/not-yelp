@@ -8,3 +8,6 @@ start-react-server:
 
 init-db:
 	cd server && ./venv/bin/python3 -c 'import app; app.db.create_all()'
+
+lint:
+	./server/venv/bin/pylint --rcfile ./server/.pylintrc server
