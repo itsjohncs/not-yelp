@@ -28,7 +28,6 @@ def register():
     return {
         "result": "success",
         "id": account.id,
-        "username": username,
     }
 
 
@@ -41,6 +40,9 @@ def login():
             "username and password are both required fields")
 
     account = Account.query.filter_by(username=username).first()
+    if not account:
+        raise custom_errors.ValidationError("Unknown username")
+
     try:
         password_hasher.verify(account.password_hash, password)
     except argon2.exceptions.VerifyMismatchError as e:
