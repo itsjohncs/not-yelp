@@ -21,3 +21,13 @@ def create_restaurant():
         "result": "success",
         "id": restaurant.id,
     }
+
+
+@app.route("/api/restaurants")
+@login_required
+def get_restaurants():
+    restaurants = Restaurant.query.all()
+    return {
+        "result": "success",
+        "restaurants": restaurants,
+    }

@@ -24,3 +24,10 @@ class Restaurant(db.Model):
             raise custom_errors.ValidationError(
                 "title must be more than 1 character")
         return title
+
+    def to_serializable(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "owner": self.owner,
+        }

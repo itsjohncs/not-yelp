@@ -26,5 +26,6 @@ postjson /api/login --data '{"username": "john", "password":"ham"}'
 postjson /api/whoami
 
 postjson /api/create-restaurant --data '{"title": "Tasty Food Co"}'
+postjson /api/restaurants
 
 rm "$COOKIE_FILE"
