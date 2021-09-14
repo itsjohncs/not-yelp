@@ -26,8 +26,13 @@ def create_restaurant():
 @app.route("/api/restaurants")
 @login_required
 def get_restaurants():
-    restaurants = Restaurant.query.all()
+    query = Restaurant.query
+
+    owner = flask.request.args.get("owner")
+    if owner:
+        query = query.filter_by(owner=owner)
+
     return {
         "result": "success",
-        "restaurants": restaurants,
+        "restaurants": query.all(),
     }

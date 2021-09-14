@@ -31,4 +31,12 @@ postjson /api/restaurants
 postjson /api/logout -X POST
 postjson /api/whoami
 
+postjson /api/register --data '{"username": "notjohn", "password":"ham"}'
+NOTJOHN="$(postjson /api/login --data '{"username": "notjohn", "password":"ham"}')"
+
+postjson /api/create-restaurant --data '{"title": "Better Food Co"}'
+postjson /api/restaurants
+postjson "/api/restaurants?owner=$(jq --raw-output .id <<< "$NOTJOHN")"
+postjson "/api/restaurants?owner=0"
+
 rm "$COOKIE_FILE"

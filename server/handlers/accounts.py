@@ -52,6 +52,7 @@ def login():
 
     return {
         "result": "success",
+        "id": account.id,
     }
 
 
