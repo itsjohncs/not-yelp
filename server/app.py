@@ -12,7 +12,7 @@ app.secret_key = b'\x1dz\xf2\xbd\x91\xff\xf1\xb8\xfc\xef\x85z\xad\x98\x8c\x95^\x
 db = flask_sqlalchemy.SQLAlchemy(app)
 
 class CustomEncoder(flask.json.JSONEncoder):
-    def default(self, obj):
+    def default(self, obj):  # pylint: disable=W0237
         if isinstance(obj, db.Model):
             return obj.to_serializable()
 
