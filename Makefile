@@ -7,7 +7,8 @@ start-react-server:
 	cd client && npm start
 
 init-db:
-	cd server && ./venv/bin/python3 -c 'import app; app.db.create_all()'
+	cd server && ./venv/bin/python3 -c 'import app; app.db.drop_all(); app.db.create_all()'
 
 lint:
+	find . \( -name 'venv' -o -name 'node_modules' \) -prune -o -name '*.sh' -print0 | xargs -0 -t shellcheck --shell=bash
 	./server/venv/bin/pylint --rcfile ./server/.pylintrc server
