@@ -17,11 +17,13 @@ function postjson {
 make init-db
 
 postjson /api/whoami
-postjson /api/login --data '{"username": "john", "password":"ham"}'
+postjson /api/login --data '{"username": "john", "password":"testpassword"}'
 
-postjson /api/register --data '{"username": "john", "password":"ham"}'
-postjson /api/login --data '{"username": "john", "password":"notham"}'
-postjson /api/login --data '{"username": "john", "password":"ham"}'
+postjson /api/register --data '{"username": "john", "password":"abc"}'
+postjson /api/register --data '{"username": "jo", "password":"testpassword"}'
+postjson /api/register --data '{"username": "john", "password":"testpassword"}'
+postjson /api/login --data '{"username": "john", "password":"incorrectpassword"}'
+postjson /api/login --data '{"username": "john", "password":"testpassword"}'
 
 postjson /api/whoami
 
@@ -31,8 +33,8 @@ postjson /api/restaurants
 postjson /api/logout -X POST
 postjson /api/whoami
 
-postjson /api/register --data '{"username": "notjohn", "password":"ham"}'
-NOTJOHN="$(postjson /api/login --data '{"username": "notjohn", "password":"ham"}')"
+postjson /api/register --data '{"username": "notjohn", "password":"testpassword"}'
+NOTJOHN="$(postjson /api/login --data '{"username": "notjohn", "password":"testpassword"}')"
 
 postjson /api/create-restaurant --data '{"title": "Better Food Co"}'
 postjson /api/restaurants

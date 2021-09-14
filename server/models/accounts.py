@@ -24,6 +24,7 @@ class Account(db.Model):
                 raise ValueError(
                     "password and password_hash cannot both be given")
 
+            self.validate_password(password)
             kwargs["password_hash"] = password_hasher.hash(password)
 
         kwargs["id"] = generate_id() if id is None else id
@@ -39,9 +40,8 @@ class Account(db.Model):
                 f"password must be between {MIN} and {MAX} characters, "
                 f"exclusive")
 
-    @staticmethod
     @sqlalchemy.orm.validates("username")
-    def validate_username(_key, username):
+    def validate_username(self, _key, username):
         MIN = 3
         MAX = 30
         if not MIN < len(username) < MAX:

@@ -17,9 +17,8 @@ class Restaurant(db.Model):
         kwargs["id"] = generate_id() if id is None else id
         super().__init__(**kwargs)
 
-    @staticmethod
     @sqlalchemy.orm.validates("title")
-    def validate_title(_key, title):
+    def validate_title(self, _key, title):
         if len(title) <= 1:
             raise custom_errors.ValidationError(
                 "title must be more than 1 character")
