@@ -28,4 +28,7 @@ postjson /api/whoami
 postjson /api/create-restaurant --data '{"title": "Tasty Food Co"}'
 postjson /api/restaurants
 
+postjson /api/logout -X POST
+postjson /api/whoami
+
 rm "$COOKIE_FILE"

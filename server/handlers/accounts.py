@@ -55,6 +55,15 @@ def login():
     }
 
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    flask.session["logged_in_account_id"] = None
+
+    return {
+        "result": "success",
+    }
+
+
 @app.route("/api/whoami", methods=["GET"])
 @login_required
 def whoami():
