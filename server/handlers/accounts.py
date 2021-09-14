@@ -4,6 +4,7 @@ import sqlalchemy
 
 from app import app, db
 from models.accounts import Account, password_hasher
+from handlers.decorators import login_required
 import custom_errors
 
 
@@ -53,19 +54,10 @@ def login():
 
 
 @app.route("/api/whoami", methods=["GET"])
+@login_required
 def whoami():
-    account_id = flask.session.get("logged_in_account_id")
-    if account_id:
-        account = Account.query.filter_by(id=account_id).first()
-        if account:
-            return {
-                "result": "success",
-                "id": account.id,
-                "username": account.username,
-            }
-
     return {
         "result": "success",
-        "id": None,
-        "username": None,
+        "id": flask.g.account.id,
+        "username": flask.g.account.username,
     }
