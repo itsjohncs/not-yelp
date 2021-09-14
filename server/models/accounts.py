@@ -57,4 +57,4 @@ class Account(db.Model):
         return username
 
     def __repr__(self):
-        return "<User %r>" % self.username
+        return f"<Account {self.id}>"
