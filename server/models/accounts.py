@@ -1,4 +1,3 @@
-import secrets
 import re
 
 import sqlalchemy
@@ -6,12 +5,15 @@ import argon2
 
 from app import db
 import custom_errors
+from models.model_ids import generate_id
 
 
 password_hasher = argon2.PasswordHasher()
 
 
 class Account(db.Model):
+    __tablename__ = "account"
+
     id = db.Column(db.String(16), primary_key=True)
     username = db.Column(db.Text(collation="NOCASE"), unique=True, nullable=False)
     password_hash = db.Column(db.Text(), nullable=False)
@@ -24,13 +26,9 @@ class Account(db.Model):
 
             kwargs["password_hash"] = password_hasher.hash(password)
 
-        kwargs["id"] = self.generate_id() if id is None else id
+        kwargs["id"] = generate_id() if id is None else id
 
         super().__init__(**kwargs)
-
-    @staticmethod
-    def generate_id():
-        return secrets.token_hex(8)
 
     @staticmethod
     def validate_password(password):

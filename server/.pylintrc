@@ -1,4 +1,4 @@
 [MASTER]
-disable=C0114,C0115,C0116,W0622,C0103,
+disable=C0114,C0115,C0116,W0622,C0103,R0903,
 ignore=venv
 load-plugins=pylint_flask_sqlalchemy
