@@ -12,3 +12,6 @@ init-db:
 lint:
 	find . \( -name 'venv' -o -name 'node_modules' \) -prune -o -name '*.sh' -print0 | xargs -0 -t shellcheck --shell=bash
 	./server/venv/bin/pylint --rcfile ./server/.pylintrc server
+
+smoke-test:
+	./smoke_test.sh
