@@ -16,6 +16,7 @@ class Review(db.Model):
     comment = db.Column(db.Text(), nullable=False)
     rating = db.Column(db.Integer(), nullable=False)
     author = db.Column(db.ForeignKey("account.id"), nullable=False)
+    restaurant = db.Column(db.ForeignKey("restaurant.id"), nullable=False)
 
     def __init__(self, *, id=None, **kwargs):
         kwargs["id"] = generate_id() if id is None else id
@@ -51,3 +52,9 @@ class Review(db.Model):
                 "rating must be between 0 and 5 inclusive")
 
         return rating
+
+    @sqlalchemy.orm.validates("restaurant")
+    @not_none
+    def validate_restaurant(self, _key, restaurant):
+        # @not_none takes care of the only validation we'll do at this level
+        return restaurant

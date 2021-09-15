@@ -1,6 +1,7 @@
 import datetime
 
 import flask
+import sqlalchemy
 
 from app import app, db
 from models.reviews import Review
@@ -20,11 +21,20 @@ def create_review():
 
     comment = flask.request.json.get("comment")
     rating = flask.request.json.get("rating")
+    restaurant = flask.request.json.get("restaurant")
 
-    review = Review(visit_date=parsed_visit_date, comment=comment,
-                    rating=rating, author=flask.g.account.id)
+    review = Review(
+        visit_date=parsed_visit_date,
+        comment=comment,
+        rating=rating,
+        restaurant=restaurant,
+        author=flask.g.account.id)
     db.session.add(review)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        raise custom_errors.ValidationError("restaurant does not exist") from e
 
     return {
         "result": "success",
