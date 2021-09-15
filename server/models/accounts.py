@@ -13,8 +13,6 @@ password_hasher = argon2.PasswordHasher()
 
 
 class Account(db.Model):
-    __tablename__ = "account"
-
     id = db.Column(db.String(16), primary_key=True)
     username = db.Column(db.Text(collation="NOCASE"), unique=True, nullable=False)
     password_hash = db.Column(db.Text(), nullable=False)

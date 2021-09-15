@@ -13,8 +13,6 @@ from models.restaurants import Restaurant
 
 
 class Review(db.Model):
-    __tablename__ = "review"
-
     id = db.Column(db.String(16), primary_key=True)
     visit_date = db.Column(db.Date(), nullable=False)
     comment = db.Column(db.Text(), nullable=False)

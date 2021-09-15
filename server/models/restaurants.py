@@ -4,14 +4,13 @@ from app import db
 import custom_errors
 from models.model_ids import generate_id
 from models.decorators import not_none
+from models.accounts import Account
 
 
 class Restaurant(db.Model):
-    __tablename__ = "restaurant"
-
     id = db.Column(db.String(16), primary_key=True)
     title = db.Column(db.Text(), nullable=False)
-    owner = db.Column(db.String(16), db.ForeignKey("account.id"),
+    owner = db.Column(db.String(16), db.ForeignKey(Account.id),
                       nullable=False)
     average_rating = db.Column(db.Float())
 
