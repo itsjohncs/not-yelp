@@ -16,6 +16,9 @@ class Account(db.Model):
     id = db.Column(db.String(16), primary_key=True)
     username = db.Column(db.Text(collation="NOCASE"), unique=True, nullable=False)
     password_hash = db.Column(db.Text(), nullable=False)
+    roles = db.Column(db.JSON(), nullable=False)
+
+    KNOWN_ROLES = {"admin", "owner", "patron"}
 
     def __init__(self, *, password=None, id=None, **kwargs):
         if password is not None:
@@ -53,6 +56,20 @@ class Account(db.Model):
                 "username must contain only characters: 0-9, A-Z, a-z, and _")
 
         return username
+
+    @sqlalchemy.orm.validates("roles")
+    @not_none
+    def validate_roles(self, _key, roles):
+        if not isinstance(roles, list):
+            raise custom_errors.ValidationError("roles must be a list")
+        elif any(i not in self.KNOWN_ROLES for i in roles):
+            raise custom_errors.ValidationError(
+                f"each role must be one of {self.KNOWN_ROLES}")
+        elif len(set(roles)) != len(roles):
+            raise custom_errors.ValidationError("each role must be unique")
+
+        return roles
+
 
     def __repr__(self):
         return f"<Account {self.id}>"

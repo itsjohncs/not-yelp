@@ -14,7 +14,7 @@ def register():
     password = flask.request.json.get("password")
 
     # Validation of the username and password is done within the model
-    account = Account(username=username, password=password)
+    account = Account(username=username, password=password, roles=["patron"])
     db.session.add(account)
 
     try:
