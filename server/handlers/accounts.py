@@ -79,7 +79,7 @@ def logout():
 
 
 @app.route("/api/whoami", methods=["GET"])
-@login_required
+@login_required()
 def whoami():
     return {
         "result": "success",

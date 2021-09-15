@@ -3,10 +3,11 @@ import flask
 from app import app, db
 from handlers.decorators import login_required
 from models.restaurants import Restaurant
+from models.accounts import Permission
 
 
 @app.route("/api/create-restaurant", methods=["POST"])
-@login_required
+@login_required(need_permissions=[Permission.CREATE_RESTAURANT])
 def create_restaurant():
     title = flask.request.json.get("title")
 
@@ -21,7 +22,7 @@ def create_restaurant():
 
 
 @app.route("/api/restaurants")
-@login_required
+@login_required()
 def get_restaurants():
     query = Restaurant.query
 

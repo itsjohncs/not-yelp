@@ -21,13 +21,19 @@ class Permission(Enum):
         return name
 
     CREATE_ADMIN_ACCOUNT = auto()
+    CREATE_RESTAURANT = auto()
+    CREATE_REVIEW = auto()
 
 
-def has_permission(account, _permission):
-    if account and "admin" in account.roles:
-        return True
+def has_permission(account, permission):
+    if not account:
+        return False
 
-    return False
+    roles = account.roles
+    return (
+        "admin" in account.roles or
+        (permission is Permission.CREATE_RESTAURANT and "owner" in roles) or
+        (permission is Permission.CREATE_REVIEW and "patron" in roles))
 
 
 class Account(db.Model):
@@ -66,9 +72,10 @@ class Account(db.Model):
     def validate_username(self, _key, username):
         MIN = 3
         MAX = 30
-        if not MIN < len(username) < MAX:
+        if not MIN <= len(username) <= MAX:
             raise custom_errors.ValidationError(
-                f"username must be between {MIN} and {MAX} characters")
+                f"username must be between {MIN} and {MAX} characters "
+                f"inclusive")
 
         if not re.match(r"^[0-9A-Za-z_]+$", username):
             raise custom_errors.ValidationError(

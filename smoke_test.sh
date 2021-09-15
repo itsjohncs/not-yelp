@@ -50,15 +50,22 @@ expect success "/api/restaurants?owner=$(jq --raw-output .id <<< "$NOTJOHN")"
 expect success "/api/restaurants?owner=0"
 
 BETTER_FOOD_CO_ID="$(jq --raw-output .id <<< "$BETTER_FOOD_CO")"
+expect error /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
+
+expect success /api/restaurants
+
+expect success "/api/restaurants/$BETTER_FOOD_CO_ID/reviews"
+
+expect success /api/logout -X POST
+
+expect success /api/register --data '{"username": "bob", "password":"testpassword", "roles": ["patron"]}'
+expect success /api/login --data '{"username": "bob", "password":"testpassword"}'
+
 expect error /api/create-review --data '{"visit_date": "2020-01-01", "rating": 7, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect error /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 7, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect error /api/create-review --data '{"visit_date": "2020-01-01", "comment": "", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect error /api/create-review --data '{"visit_date": "1899-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect error /api/create-review --data '{"visit_date": "3000-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect success /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
-
-expect success /api/restaurants
-
-expect success "/api/restaurants/$BETTER_FOOD_CO_ID/reviews"
 
 rm "$COOKIE_FILE"

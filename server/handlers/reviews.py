@@ -5,12 +5,13 @@ import sqlalchemy
 
 from app import app, db
 from models.reviews import Review
+from models.accounts import Permission
 from handlers.decorators import login_required
 import custom_errors
 
 
 @app.route("/api/create-review", methods=["POST"])
-@login_required
+@login_required(need_permissions=[Permission.CREATE_REVIEW])
 def create_review():
     visit_date = flask.request.json.get("visit_date")
     try:
@@ -43,7 +44,7 @@ def create_review():
 
 
 @app.route("/api/restaurants/<restaurant>/reviews")
-@login_required
+@login_required()
 def get_reviews(restaurant):
     return {
         "result": "success",
