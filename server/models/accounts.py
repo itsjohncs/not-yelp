@@ -69,7 +69,3 @@ class Account(db.Model):
             raise custom_errors.ValidationError("each role must be unique")
 
         return roles
-
-
-    def __repr__(self):
-        return f"<Account {self.id}>"
