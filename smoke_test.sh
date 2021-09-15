@@ -48,4 +48,10 @@ expect success /api/restaurants
 expect success "/api/restaurants?owner=$(jq --raw-output .id <<< "$NOTJOHN")"
 expect success "/api/restaurants?owner=0"
 
+expect success /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 5}'
+expect error /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 7}'
+expect error /api/create-review --data '{"visit_date": "2020-01-01", "comment": "", "rating": 5}'
+expect error /api/create-review --data '{"visit_date": "1899-01-01", "comment": "great", "rating": 5}'
+expect error /api/create-review --data '{"visit_date": "3000-01-01", "comment": "great", "rating": 5}'
+
 rm "$COOKIE_FILE"
