@@ -3,6 +3,7 @@ import sqlalchemy
 from app import db
 import custom_errors
 from models.model_ids import generate_id
+from models.decorators import not_none
 
 
 class Restaurant(db.Model):
@@ -18,6 +19,7 @@ class Restaurant(db.Model):
         super().__init__(**kwargs)
 
     @sqlalchemy.orm.validates("title")
+    @not_none
     def validate_title(self, _key, title):
         if len(title) <= 1:
             raise custom_errors.ValidationError(

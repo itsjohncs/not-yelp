@@ -3,8 +3,9 @@ import datetime
 import sqlalchemy
 
 from app import db
-from models.model_ids import generate_id
 import custom_errors
+from models.model_ids import generate_id
+from models.decorators import not_none
 
 
 class Review(db.Model):
@@ -21,6 +22,7 @@ class Review(db.Model):
         super().__init__(**kwargs)
 
     @sqlalchemy.orm.validates("visit_date")
+    @not_none
     def validate_visit_date(self, _key, visit_date):
         two_days_from_now = datetime.date.today() + datetime.timedelta(days=2)
         if not datetime.date(1900, 1, 1) <= visit_date <= two_days_from_now:
@@ -33,6 +35,7 @@ class Review(db.Model):
         return visit_date
 
     @sqlalchemy.orm.validates("comment")
+    @not_none
     def validate_comment(self, _key, comment):
         if len(comment) <= 1:
             raise custom_errors.ValidationError(
@@ -41,6 +44,7 @@ class Review(db.Model):
         return comment
 
     @sqlalchemy.orm.validates("rating")
+    @not_none
     def validate_rating(self, _key, rating):
         if not 0 <= rating <= 5:
             raise custom_errors.ValidationError(

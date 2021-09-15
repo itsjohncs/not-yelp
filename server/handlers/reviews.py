@@ -14,7 +14,7 @@ def create_review():
     visit_date = flask.request.json.get("visit_date")
     try:
         parsed_visit_date = datetime.date.fromisoformat(visit_date)
-    except ValueError as err:
+    except (ValueError, TypeError) as err:
         raise custom_errors.ValidationError(
             "visit date must be in format YYYY-MM-DD (per ISO 8601)") from err
 

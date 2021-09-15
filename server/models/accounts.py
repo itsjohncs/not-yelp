@@ -6,6 +6,7 @@ import argon2
 from app import db
 import custom_errors
 from models.model_ids import generate_id
+from models.decorators import not_none
 
 
 password_hasher = argon2.PasswordHasher()
@@ -41,6 +42,7 @@ class Account(db.Model):
                 f"exclusive")
 
     @sqlalchemy.orm.validates("username")
+    @not_none
     def validate_username(self, _key, username):
         MIN = 3
         MAX = 30

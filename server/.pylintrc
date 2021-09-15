@@ -3,3 +3,6 @@ disable=C0114,C0115,C0116,W0622,C0103,R0903,R0201,
 ignore=venv
 load-plugins=pylint_flask_sqlalchemy
 ignored-classes=scoped_session
+
+[SIMILIARITIES]
+ignore-imports=yes

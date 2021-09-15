@@ -12,9 +12,6 @@ import custom_errors
 def register():
     username = flask.request.json.get("username")
     password = flask.request.json.get("password")
-    if not username or not password:
-        raise custom_errors.ValidationError(
-            "username and password are both required fields")
 
     # Validation of the username and password is done within the model
     account = Account(username=username, password=password)
