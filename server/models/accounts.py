@@ -32,7 +32,8 @@ def has_permission(account, _permission):
 
 class Account(db.Model):
     id = db.Column(db.String(16), primary_key=True)
-    username = db.Column(db.Text(collation="NOCASE"), unique=True, nullable=False)
+    username = db.Column(db.Text(collation="NOCASE"), unique=True,
+                         nullable=False)
     password_hash = db.Column(db.Text(), nullable=False)
     roles = db.Column(db.JSON(), nullable=False)
 
