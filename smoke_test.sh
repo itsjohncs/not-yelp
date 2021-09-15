@@ -56,4 +56,6 @@ expect error /api/create-review --data '{"visit_date": "1899-01-01", "comment": 
 expect error /api/create-review --data '{"visit_date": "3000-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 expect success /api/create-review --data '{"visit_date": "2020-01-01", "comment": "great", "rating": 5, "restaurant": "'"$BETTER_FOOD_CO_ID"'"}'
 
+expect success /api/restaurants
+
 rm "$COOKIE_FILE"

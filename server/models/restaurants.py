@@ -31,4 +31,5 @@ class Restaurant(db.Model):
             "id": self.id,
             "title": self.title,
             "owner": self.owner,
+            "average_rating": self.average_rating,
         }
