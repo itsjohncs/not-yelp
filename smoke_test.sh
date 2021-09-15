@@ -58,4 +58,6 @@ expect success /api/create-review --data '{"visit_date": "2020-01-01", "comment"
 
 expect success /api/restaurants
 
+expect success "/api/restaurants/$BETTER_FOOD_CO_ID/reviews"
+
 rm "$COOKIE_FILE"

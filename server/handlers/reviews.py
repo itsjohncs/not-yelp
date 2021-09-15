@@ -40,3 +40,12 @@ def create_review():
         "result": "success",
         "id": review.id,
     }
+
+
+@app.route("/api/restaurants/<restaurant>/reviews")
+@login_required
+def get_reviews(restaurant):
+    return {
+        "result": "success",
+        "reviews": Review.query.filter_by(restaurant=restaurant).all(),
+    }

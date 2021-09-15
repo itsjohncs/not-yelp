@@ -61,6 +61,16 @@ class Review(db.Model):
         # @not_none takes care of the only validation we'll do at this level
         return restaurant
 
+    def to_serializable(self):
+        return {
+            "id": self.id,
+            "visit_date": self.visit_date,
+            "comment": self.comment,
+            "rating": self.rating,
+            "author": self.author,
+            "restaurant": self.restaurant,
+        }
+
 
 @db.event.listens_for(Review, "after_insert")  # pylint: disable=E1101
 @db.event.listens_for(Review, "after_update")  # pylint: disable=E1101
