@@ -13,6 +13,7 @@ class Restaurant(db.Model):
     title = db.Column(db.Text(), nullable=False)
     owner = db.Column(db.String(16), db.ForeignKey("account.id"),
                       nullable=False)
+    average_rating = db.Column(db.Float())
 
     def __init__(self, *, id=None, **kwargs):
         kwargs["id"] = generate_id() if id is None else id

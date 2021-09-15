@@ -1,11 +1,15 @@
 import datetime
 
 import sqlalchemy
+from sqlalchemy.sql.expression import select, update
+from sqlalchemy.sql import func
 
 from app import db
 import custom_errors
 from models.model_ids import generate_id
 from models.decorators import not_none
+from models.accounts import Account
+from models.restaurants import Restaurant
 
 
 class Review(db.Model):
@@ -15,8 +19,8 @@ class Review(db.Model):
     visit_date = db.Column(db.Date(), nullable=False)
     comment = db.Column(db.Text(), nullable=False)
     rating = db.Column(db.Integer(), nullable=False)
-    author = db.Column(db.ForeignKey("account.id"), nullable=False)
-    restaurant = db.Column(db.ForeignKey("restaurant.id"), nullable=False)
+    author = db.Column(db.ForeignKey(Account.id), nullable=False)
+    restaurant = db.Column(db.ForeignKey(Restaurant.id), nullable=False)
 
     def __init__(self, *, id=None, **kwargs):
         kwargs["id"] = generate_id() if id is None else id
@@ -58,3 +62,25 @@ class Review(db.Model):
     def validate_restaurant(self, _key, restaurant):
         # @not_none takes care of the only validation we'll do at this level
         return restaurant
+
+
+@db.event.listens_for(Review, "after_insert")  # pylint: disable=E1101
+@db.event.listens_for(Review, "after_update")  # pylint: disable=E1101
+def update_restaurant_on_review_insert(_mapper, connection, target):
+    target_rating_changed = (
+        sqlalchemy.inspect(target).attrs.rating
+            .history.has_changes())
+    if not target_rating_changed:
+        return
+
+    # Getting the average without race conditions would take some work but
+    # fortunately the average being slightly off seems acceptable.
+    result = connection.execute(
+        select(func.avg(Review.rating))
+            .filter_by(restaurant=target.restaurant)).all()
+    average_rating = result[0][0]
+
+    connection.execute(
+        update(Restaurant)
+            .where(Restaurant.id == target.restaurant)
+            .values(average_rating=average_rating))
