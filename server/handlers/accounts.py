@@ -3,18 +3,34 @@ import argon2
 import sqlalchemy
 
 from app import app, db
-from models.accounts import Account, password_hasher
+from models.accounts import Account, password_hasher, has_permission, Permission
 from handlers.decorators import login_required
 import custom_errors
+
+
+@app.before_request
+def load_account():
+    flask.g.account = None  # pylint: disable=E0237
+
+    account_id = flask.session.get("logged_in_account_id")
+    if account_id:
+        account = Account.query.filter_by(id=account_id).first()
+        if account:
+            flask.g.account = account  # pylint: disable=E0237
 
 
 @app.route("/api/register", methods=["POST"])
 def register():
     username = flask.request.json.get("username")
     password = flask.request.json.get("password")
+    roles = flask.request.json.get("roles")
 
-    # Validation of the username and password is done within the model
-    account = Account(username=username, password=password, roles=["patron"])
+    account = Account(username=username, password=password, roles=roles)
+    if ("admin" in account.roles and
+            not has_permission(flask.g.account,
+                               Permission.CREATE_ADMIN_ACCOUNT)):
+        raise custom_errors.PermissionError(Permission.CREATE_ADMIN_ACCOUNT)
+
     db.session.add(account)
 
     try:

@@ -1,3 +1,4 @@
+from enum import Enum, auto
 import re
 
 import sqlalchemy
@@ -10,6 +11,23 @@ from models.decorators import not_none
 
 
 password_hasher = argon2.PasswordHasher()
+
+
+class Permission(Enum):
+    # Gives each enum the value of its name. For example:
+    # CREATE_ADMIN_USER.value == "CREATE_ADMIN_USER"
+    # pylint: disable-next=E0213
+    def _generate_next_value_(name, _start, _count, _last_values):
+        return name
+
+    CREATE_ADMIN_ACCOUNT = auto()
+
+
+def has_permission(account, _permission):
+    if account and "admin" in account.roles:
+        return True
+
+    return False
 
 
 class Account(db.Model):

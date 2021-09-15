@@ -12,6 +12,14 @@ def validation_error(err):
     }, 400
 
 
+@app.errorhandler(custom_errors.PermissionError)
+def permission_error(err):
+    return {
+        "result": "error",
+        "message": err.message,
+    }, 401
+
+
 @app.errorhandler(custom_errors.AuthorizationError)
 def authorization_error(_err):
     return {

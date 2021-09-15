@@ -26,9 +26,10 @@ make init-db
 expect error /api/whoami
 expect error /api/login --data '{"username": "john", "password":"testpassword"}'
 
-expect error /api/register --data '{"username": "john", "password":"abc"}'
-expect error /api/register --data '{"username": "jo", "password":"testpassword"}'
-expect success /api/register --data '{"username": "john", "password":"testpassword"}'
+expect error /api/register --data '{"username": "john", "password":"abc", "roles": ["owner"]}'
+expect error /api/register --data '{"username": "jo", "password":"testpassword", "roles": ["owner"]}'
+expect error /api/register --data '{"username": "john", "password":"testpassword", "roles": ["owner", "admin"]}'
+expect success /api/register --data '{"username": "john", "password":"testpassword", "roles": ["owner"]}'
 expect error /api/login --data '{"username": "john", "password":"incorrectpassword"}'
 expect success /api/login --data '{"username": "john", "password":"testpassword"}'
 
@@ -40,7 +41,7 @@ expect success /api/restaurants
 expect success /api/logout -X POST
 expect error /api/whoami
 
-expect success /api/register --data '{"username": "notjohn", "password":"testpassword"}'
+expect success /api/register --data '{"username": "notjohn", "password":"testpassword", "roles": ["owner"]}'
 NOTJOHN="$(expect success /api/login --data '{"username": "notjohn", "password":"testpassword"}')"
 
 BETTER_FOOD_CO="$(expect success /api/create-restaurant --data '{"title": "Better Food Co"}')"
