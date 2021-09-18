@@ -23,6 +23,7 @@ class Permission(Enum):
     CREATE_ADMIN_ACCOUNT = auto()
     CREATE_RESTAURANT = auto()
     CREATE_REVIEW = auto()
+    CREATE_REVIEW_REPLY = auto()
 
 
 def has_permission(account, permission):
@@ -33,7 +34,8 @@ def has_permission(account, permission):
     return (
         "admin" in account.roles or
         (permission is Permission.CREATE_RESTAURANT and "owner" in roles) or
-        (permission is Permission.CREATE_REVIEW and "patron" in roles))
+        (permission is Permission.CREATE_REVIEW and "patron" in roles) or
+        (permission is Permission.CREATE_REVIEW_REPLY and "owner" in roles))
 
 
 class Account(db.Model):

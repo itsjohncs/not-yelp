@@ -2,6 +2,7 @@ import datetime
 
 import flask
 import sqlalchemy
+from sqlalchemy.orm import joinedload
 
 from app import app, db
 from models.reviews import Review
@@ -44,9 +45,37 @@ def create_review():
 
 
 @app.route("/api/restaurants/<restaurant>/reviews")
-@login_required()
 def get_reviews(restaurant):
     return {
         "result": "success",
         "reviews": Review.query.filter_by(restaurant=restaurant).all(),
+    }
+
+
+@app.route("/api/reviews/<review>/create-reply", methods=["POST"])
+@login_required(need_permissions=[Permission.CREATE_REVIEW_REPLY])
+def create_review_reply(review):
+    review = (
+        Review.query
+            .filter_by(id=review)
+            .options(joinedload(Review.restaurant_obj))
+            .populate_existing()
+            .with_for_update()
+            .first())
+    if not review:
+        raise custom_errors.ValidationError("unknown review id")
+
+    if ("admin" not in flask.g.account.roles and
+            review.restaurant_obj.owner != flask.g.account.id):
+        raise custom_errors.AuthorizationError(
+            "you are not the owner of the restaurant")
+
+    comment = flask.request.json.get("comment")
+    review.reply_author = flask.g.account.id
+    review.reply_comment = comment
+
+    db.session.commit()
+
+    return {
+        "result": "success",
     }

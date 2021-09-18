@@ -3,6 +3,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy.sql.expression import select, update
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 from app import db
 import custom_errors
@@ -18,7 +19,11 @@ class Review(db.Model):
     comment = db.Column(db.Text(), nullable=False)
     rating = db.Column(db.Integer(), nullable=False)
     author = db.Column(db.ForeignKey(Account.id), nullable=False)
-    restaurant = db.Column(db.ForeignKey(Restaurant.id), nullable=False)
+    restaurant = db.Column(db.ForeignKey(Restaurant.id), nullable=False,
+                           index=True)
+    restaurant_obj = relationship(Restaurant)
+    reply_author = db.Column(db.ForeignKey(Account.id))
+    reply_comment = db.Column(db.Text())
 
     def __init__(self, *, id=None, **kwargs):
         kwargs["id"] = generate_id() if id is None else id
@@ -61,6 +66,14 @@ class Review(db.Model):
         # @not_none takes care of the only validation we'll do at this level
         return restaurant
 
+    @sqlalchemy.orm.validates("reply_comment")
+    def validate_reply_comment(self, _key, reply_comment):
+        if len(reply_comment) <= 1:
+            raise custom_errors.ValidationError(
+                "reply_comment must be more than 1 character")
+
+        return reply_comment
+
     def to_serializable(self):
         return {
             "id": self.id,
@@ -69,6 +82,8 @@ class Review(db.Model):
             "rating": self.rating,
             "author": self.author,
             "restaurant": self.restaurant,
+            "reply_author": self.reply_author,
+            "reply_comment": self.reply_comment,
         }
 
 
