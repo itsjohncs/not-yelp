@@ -12,7 +12,7 @@ function expect {
 		--header "Content-Type: application/json" \
 		-b "$COOKIE_FILE" \
 		-c "$COOKIE_FILE" \
-		"http://localhost:3000$2" \
+		"http://127.0.0.1:65128$2" \
 		"${@:3}")"
 	echo "$RESPONSE"
 	if [[ "$(jq --raw-output .result <<< "$RESPONSE")" != "$1" ]]; then
